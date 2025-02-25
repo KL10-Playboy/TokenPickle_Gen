@@ -17,14 +17,9 @@ if os.path.exists(__G_DRIVE_TOKEN_FILE):
         ):
             credentials.refresh(Request())
 else:
-    flow = InstalledAppFlow.from_client_secrets_file('credentials.json', __OAUTH_SCOPE)
-    auth_url, _ = flow.authorization_url(prompt='consent')
-
-    print(f"Please visit this URL to authorize this application: {auth_url}")
-
-    code = input('Enter the authorization code: ')
-    flow.fetch_token(code=code)
-    credentials = flow.credentials
+    flow = InstalledAppFlow.from_client_secrets_file(
+        'credentials.json', __OAUTH_SCOPE)
+    credentials = flow.run_console()
 
 # Save the credentials for the next run
 with open(__G_DRIVE_TOKEN_FILE, 'wb') as token:
