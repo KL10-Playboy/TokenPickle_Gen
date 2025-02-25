@@ -1,70 +1,81 @@
-# How To Generate Token Pickle With Android Easily After Google Auth2.0 New policy update. Without any kind of error.
+# OAuth 2.0 Token Generator
 
-### 1. Install Termux [F-Droid](https://f-droid.org/en/packages/com.termux/)
+This project provides a Python script to generate and manage OAuth 2.0 tokens for accessing Google APIs such as Gmail and Google Drive. The script handles token creation, validation, and refreshing, ensuring secure and seamless authentication.
 
-### 2. Open Termux and just copy paste all the commands that described below, Make sure you have internet connection. if you see Y/n then Type y.
+## Features
 
-```
-sudo apt update && sudo apt upgrade -y && sudo apt install git python3 python3-pip -y && sudo apt upgrade python3 -y && python3 -m pip install --upgrade pip && pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib
+- **Token Management**: Automatically loads existing tokens, checks their validity, and refreshes them when necessary.
+- **Secure Storage**: Tokens are saved securely with appropriate file permissions.
+- **Guided Setup**: Provides step-by-step instructions to configure OAuth 2.0 credentials in the Google Cloud Console.
+- **Comprehensive Validation**: Ensures the credentials file is correctly structured and contains all required fields.
 
-```
+## Prerequisites
 
-### 3.
+- Python 3.6 or higher
+- `google-auth`, `google-auth-oauthlib`, and `google-auth-httplib2` libraries
 
-```
-git clone https://github.com/FollowNaim/TokenPickle
-```
+Install the required libraries using pip:
 
-### 4. make sure Credentials.json file present in your storage folder not in Sd card. if not then just move credentials.json file into the sdcard. Not in any folder.
-
-### 5. you have to give storage permission to termux. for that use this command.
-
-```
-termux-setup-storage
+```bash
+pip install google-auth google-auth-oauthlib google-auth-httplib2
 ```
 
-### 6.
+## Setup Instructions
 
-```
-cd /sdcard
-```
+1. **Clone the Repository**:
 
-### 7.
+   ```bash
+   git clone https://github.com/yourusername/oauth-token-generator.git
+   cd oauth-token-generator
+   ```
 
-```
-cp -r credentials.json /data/data/com.termux/files/home/TokenPickle
-```
+2. **Configure OAuth 2.0 Credentials**:
 
-### 8. Just exit from termux and reopen it.
+   - Navigate to the [Google Cloud Console](https://console.cloud.google.com).
+   - Create a new project or select an existing one.
+   - Enable the required APIs (e.g., Gmail API, Google Drive API).
+   - Configure the OAuth consent screen:
+     - Set User Type to 'External'.
+     - Fill in the required app information.
+     - Add test users if in testing mode.
+     - Add the necessary scopes:
+       - `https://www.googleapis.com/auth/gmail.readonly`
+       - `https://www.googleapis.com/auth/drive.readonly`
+       - `openid`
+       - `https://www.googleapis.com/auth/userinfo.email`
+       - `https://www.googleapis.com/auth/userinfo.profile`
+   - Create OAuth client ID:
+     - Choose 'Desktop application' as the application type.
+     - Set an appropriate name.
+   - Download the JSON file and save it as `credentials.json` in the project directory.
 
-### 9.
+3. **Run the Token Generator**:
 
-```
-cd TokenPickle
-```
+   Execute the script to generate or refresh the token:
 
-### 10.
+   ```bash
+   python GenerateTokenPickle.py
+   ```
 
-```
-python3 GenerateTokenPickle.py
-```
+   Follow the on-screen instructions to authenticate and authorize access. Upon successful completion, a `token.pickle` file will be created in the project directory.
 
-### 11. You'll find a url https://accounts.google.com/o/oauth2/=offline like this. just copy this url and paste on browser and login into your google account. that's it. you'll see 'The authentication flow has completed. You may close this window' this massage. then you're done.
+## Security Considerations
 
-### 12.
+- Ensure that both `credentials.json` and `token.pickle` files have secure permissions (read/write for the owner only). The script attempts to set these permissions automatically on Unix-based systems.
+- Regularly review and rotate your credentials to maintain security.
+- Be aware of Google's OAuth 2.0 policies, especially if you plan to publish the application. Unverified apps can still be tested with test users.
 
-```
-cp -r token.pickle /sdcard
-```
+## Troubleshooting
 
-### 13. Boom 💥!
+- **Invalid Credentials File**: Ensure that `credentials.json` is correctly structured and contains all required fields. The script validates the file and provides specific error messages if issues are detected.
+- **Token Generation Failure**: If the token generation fails, the script will display error messages to help identify the problem. Common issues include incorrect credentials or network problems.
 
-goto your sdcard (phone memory) you'll find token.pickle there.
+For further assistance, refer to the [Google Identity Platform Documentation](https://developers.google.com/identity/protocols/oauth2) or open an issue in this repository.
 
-We're Done.
+## License
 
-# Enjoy And don't forget to star this repo 🙂
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-# Credits...
+---
 
-[`Anasty17`](https://github.com/anasty17)
+*Note: This project is intended for educational and testing purposes. Ensure compliance with Google's policies and guidelines when using OAuth 2.0 in production applications.* 
