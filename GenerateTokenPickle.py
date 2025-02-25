@@ -1,26 +1,47 @@
-import pickle
 import os
+import pickle
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
-credentials = None
-__G_DRIVE_TOKEN_FILE = "token.pickle"
-__OAUTH_SCOPE = ["https://www.googleapis.com/auth/drive"]
-if os.path.exists(__G_DRIVE_TOKEN_FILE):
-    with open(__G_DRIVE_TOKEN_FILE, 'rb') as f:
-        credentials = pickle.load(f)
-        if (
-            (credentials is None or not credentials.valid)
-            and credentials
-            and credentials.expired
-            and credentials.refresh_token
-        ):
-            credentials.refresh(Request())
-else:
-    flow = InstalledAppFlow.from_client_secrets_file(
-        'credentials.json', __OAUTH_SCOPE)
-    credentials = flow.run_console()
+# Define the OAuth scopes required
+SCOPES = ['https://www.googleapis.com/auth/drive']
 
-# Save the credentials for the next run
-with open(__G_DRIVE_TOKEN_FILE, 'wb') as token:
-    pickle.dump(credentials, token)
+# Path to the credentials file
+CREDENTIALS_FILE = 'credentials.json'
+# Path to the token file
+TOKEN_FILE = 'token.pickle'
+
+def main():
+    creds = None
+
+    # Check if the token file already exists
+    if os.path.exists(TOKEN_FILE):
+        with open(TOKEN_FILE, 'rb') as token:
+            creds = pickle.load(token)
+        # Refresh the token if it's expired
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+    else:
+        # If no valid credentials, initiate the OAuth flow
+        flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_FILE, SCOPES)
+        auth_url, _ = flow.authorization_url(prompt='consent')
+
+        print('Please go to this URL and authorize the application:')
+        print(auth_url)
+
+        # After authorization, Google will redirect you to a URL with a code parameter
+        auth_code = input('Enter the authorization code here: ')
+        flow.fetch_token(code=auth_code)
+        creds = flow.credentials
+
+        # Save the credentials for future use
+        with open(TOKEN_FILE, 'wb') as token:
+            pickle.dump(creds, token)
+
+    if creds and creds.valid:
+        print('Authentication successful. Credentials have been saved to', TOKEN_FILE)
+    else:
+        print('Failed to obtain valid credentials.')
+
+if __name__ == '__main__':
+    main()
