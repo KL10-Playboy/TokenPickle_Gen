@@ -9,73 +9,68 @@ This project provides a Python script to generate and manage OAuth 2.0 tokens fo
 - **Guided Setup**: Provides step-by-step instructions to configure OAuth 2.0 credentials in the Google Cloud Console.
 - **Comprehensive Validation**: Ensures the credentials file is correctly structured and contains all required fields.
 
+# Overview
+This script (`GenerateTokenPickle.py`) automates the OAuth 2.0 authentication process for accessing Google APIs, such as Gmail and Google Drive. It checks for an existing authentication token, validates it, refreshes it if necessary, or initiates a new authentication flow if no valid token is found. The authenticated token is securely stored as `token.pickle` for future use.
+
+# Running the Script
+
 ## Prerequisites
+Before running this script, ensure the following:
+1. **Python 3.x** is installed.
+2. Required Python packages are installed:
+   ```bash
+   pip install google-auth google-auth-oauthlib google-auth-httplib2 google-auth-requests
+   ```
+3. A **Google Cloud project** is set up with OAuth 2.0 credentials.
+4. The **`credentials.json`** file is present in the script directory.
 
-- Python 3.6 or higher
-- `google-auth`, `google-auth-oauthlib`, and `google-auth-httplib2` libraries
+## Google Cloud Setup (OAuth 2.0 Credentials)
+Follow these steps to obtain OAuth credentials:
+1. Visit the **Google Cloud Console**: [https://console.cloud.google.com](https://console.cloud.google.com)
+2. Create a new project or select an existing one.
+3. Enable the required APIs (e.g., Gmail API, Google Drive API).
+4. Configure the OAuth consent screen:
+   - Choose `External` for User Type.
+   - Fill in required application details.
+   - Add test users if needed.
+   - Add the following scopes:
+     ```
+     https://www.googleapis.com/auth/gmail.readonly
+     https://www.googleapis.com/auth/drive.readonly
+     openid
+     https://www.googleapis.com/auth/userinfo.email
+     https://www.googleapis.com/auth/userinfo.profile
+     ```
+5. Create OAuth Client ID:
+   - Select `Desktop Application` as the Application Type.
+   - Download the generated credentials file as `credentials.json`.
+   - Place `credentials.json` in the same directory as `GenerateTokenPickle.py`.
 
-Install the required libraries using pip:
-
+## Installation and Running the Script
+Run the following commands to install dependencies, clone the repository, and execute the script:
 ```bash
-pip install google-auth google-auth-oauthlib google-auth-httplib2
+sudo apt-get install -y apt-transport-https ca-certificates curl gpg
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+sudo apt update && sudo apt upgrade -y && sudo apt install git python3 python3-pip -y && sudo apt upgrade python3 -y && python3 -m pip install --upgrade pip && pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib
+
+git clone https://github.com/KL10-Playboy/TokenPickle_Gen
+
+cd TokenPickle_Gen
+
+wget -O credentials.json "direct_link_of_credentials.json"
+
+ls
+
+python3 GenerateTokenPickle.py
 ```
 
-## Setup Instructions
-
-1. **Clone the Repository**:
-
-   ```bash
-   git clone https://github.com/yourusername/oauth-token-generator.git
-   cd oauth-token-generator
-   ```
-
-2. **Configure OAuth 2.0 Credentials**:
-
-   - Navigate to the [Google Cloud Console](https://console.cloud.google.com).
-   - Create a new project or select an existing one.
-   - Enable the required APIs (e.g., Gmail API, Google Drive API).
-   - Configure the OAuth consent screen:
-     - Set User Type to 'External'.
-     - Fill in the required app information.
-     - Add test users if in testing mode.
-     - Add the necessary scopes:
-       - `https://www.googleapis.com/auth/gmail.readonly`
-       - `https://www.googleapis.com/auth/drive.readonly`
-       - `openid`
-       - `https://www.googleapis.com/auth/userinfo.email`
-       - `https://www.googleapis.com/auth/userinfo.profile`
-   - Create OAuth client ID:
-     - Choose 'Desktop application' as the application type.
-     - Set an appropriate name.
-   - Download the JSON file and save it as `credentials.json` in the project directory.
-
-3. **Run the Token Generator**:
-
-   Execute the script to generate or refresh the token:
-
-   ```bash
-   python GenerateTokenPickle.py
-   ```
-
-   Follow the on-screen instructions to authenticate and authorize access. Upon successful completion, a `token.pickle` file will be created in the project directory.
-
-## Security Considerations
-
-- Ensure that both `credentials.json` and `token.pickle` files have secure permissions (read/write for the owner only). The script attempts to set these permissions automatically on Unix-based systems.
-- Regularly review and rotate your credentials to maintain security.
-- Be aware of Google's OAuth 2.0 policies, especially if you plan to publish the application. Unverified apps can still be tested with test users.
-
 ## Troubleshooting
+### **Error: `credentials.json` Not Found**
+- Ensure `credentials.json` is in the correct directory.
+- Follow the Google Cloud setup steps to obtain credentials.
 
-- **Invalid Credentials File**: Ensure that `credentials.json` is correctly structured and contains all required fields. The script validates the file and provides specific error messages if issues are detected.
-- **Token Generation Failure**: If the token generation fails, the script will display error messages to help identify the problem. Common issues include incorrect credentials or network problems.
+### **Error: Token Expired and Refresh Fails**
+- Delete `token.pickle` and re-run the script.
+- Ensure the OAuth consent screen and API access are properly configured.
 
-For further assistance, refer to the [Google Identity Platform Documentation](https://developers.google.com/identity/protocols/oauth2) or open an issue in this repository.
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
----
-
-*Note: This project is intended for educational and testing purposes. Ensure compliance with Google's policies and guidelines when using OAuth 2.0 in production applications.* 
