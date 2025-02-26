@@ -101,7 +101,7 @@ class TokenGenerator:
                 port=0,  # Random port
                 prompt='consent',  # Force consent prompt
                 access_type='offline',  # Enable refresh token
-                include_granted_scopes=True  # Include incremental authorization
+                include_granted_scopes='true'  # Include incremental authorization
             )
 
             return self.save_token()
